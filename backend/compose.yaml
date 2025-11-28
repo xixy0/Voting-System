@@ -1,0 +1,12 @@
+version : '4.0'
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: votingDB
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user1234
+      TZ: Asia/Kolkata
+    ports:
+      - "5433:5432"
