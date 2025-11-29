@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VoterRequestDTO {
+public class VoteRequestDTO {
 
     @NotNull(message = "Election ID is required")
     private Long electionId;

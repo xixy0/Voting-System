@@ -68,4 +68,12 @@ public class ElectionServiceImpl implements ElectionService {
 
         return modelMapper.map(saved,ElectionDTO.class);
     }
+
+    @Override
+    public ElectionDTO getElectionById(Long electionId) {
+        Election election = electionRepository.findById(electionId)
+                .orElseThrow(()-> new ResourceNotFoundException("Election not found"));
+
+        return modelMapper.map(election,ElectionDTO.class);
+    }
 }

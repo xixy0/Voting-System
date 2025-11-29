@@ -1,7 +1,7 @@
 package com.internship.votingSystem.service.ServiceImpl;
 
+import com.internship.votingSystem.DTO.VoteRequestDTO;
 import com.internship.votingSystem.DTO.VoteResultDTO;
-import com.internship.votingSystem.DTO.VoterRequestDTO;
 import com.internship.votingSystem.ElectionStatus;
 import com.internship.votingSystem.entity.*;
 import com.internship.votingSystem.exceptions.DuplicateResourceException;
@@ -28,13 +28,13 @@ public class VoteServiceImpl implements VoteService {
     private final CandidateRepository candidateRepository;
 
     @Override
-    public void castVote(String username, VoterRequestDTO voterRequestDTO) {
+    public void castVote(String username, VoteRequestDTO voteRequestDTO) {
 
         User user = userRepository.findByUsername(username).orElseThrow(
                 ()-> new ResourceNotFoundException("User not found"));
         Voter voter = voterRepository.findByUser(user)
                 .orElseThrow(()-> new ResourceNotFoundException("Voter not found"));
-        Election election = electionRepository.findById(voterRequestDTO.getElectionId()).orElseThrow(
+        Election election = electionRepository.findById(voteRequestDTO.getElectionId()).orElseThrow(
                 ()-> new ResourceNotFoundException("Election not found"));
 
         if(election.getElectionStatus() != ElectionStatus.ACTIVE){
@@ -51,7 +51,7 @@ public class VoteServiceImpl implements VoteService {
             throw new DuplicateResourceException("You have already voted");
         }
 
-        Candidate candidate = candidateRepository.findById(voterRequestDTO.getCandidateId()).orElseThrow(
+        Candidate candidate = candidateRepository.findById(voteRequestDTO.getCandidateId()).orElseThrow(
                 ()-> new ResourceNotFoundException("Candidate not found"));
 
         if(!candidate.getElection().getElectionId().equals(election.getElectionId())){
@@ -69,7 +69,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public List<VoteResultDTO> getElectionResults(long electionId) {
+    public List<VoteResultDTO> getElectionResults(Long electionId) {
         Election election = electionRepository.findById(electionId)
                 .orElseThrow(()->new ResourceNotFoundException("Election not found"));
 

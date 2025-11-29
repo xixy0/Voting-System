@@ -12,4 +12,5 @@ public interface ElectionService {
     List<ElectionDTO> getAllElections();
     List<ElectionDTO> getActiveElections();
     ElectionDTO updateElectionStatus(Long electionId, ElectionStatus electionStatus);
+    ElectionDTO  getElectionById(Long electionId);
 }

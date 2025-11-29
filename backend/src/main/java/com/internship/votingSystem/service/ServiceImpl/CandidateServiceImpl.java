@@ -41,6 +41,8 @@ public class CandidateServiceImpl implements CandidateService {
         return modelMapper.map(saved,CandidateDTO.class);
     }
 
+
+
     @Override
     public List<CandidateDTO> getCandidatesByElection(Long electionId) {
        List<Candidate> candidates = candidateRepository.findByElectionId(electionId);
@@ -59,6 +61,35 @@ public class CandidateServiceImpl implements CandidateService {
         }
 
        candidateRepository.delete(candidate);
+
+    }
+
+    @Override
+    public CandidateDTO updateCandidate(CandidateDTO candidateDTO) {
+
+        Election election = electionRepository.findById(candidateDTO.getElectionId())
+                .orElseThrow(()->new ResourceNotFoundException("Election not found"));
+
+        if(election.getElectionStatus() != ElectionStatus.SCHEDULED){
+            throw new InvalidElectionStateException("Candidate cannot be updated");
+        }
+
+        Candidate candidate = candidateRepository.findById(candidateDTO.getCandidateId())
+                .orElseThrow(()-> new ResourceNotFoundException("Candidate not found"));
+
+        if(!candidateDTO.getCandidateName().isEmpty()){
+            candidate.setCandidateName(candidate.getCandidateName());
+        }
+        if(!candidateDTO.getCandidateDescription().isEmpty()){
+            candidate.setCandidateDescription(candidate.getCandidateDescription());
+        }
+        if(!candidateDTO.getCandidateParty().isEmpty()){
+            candidate.setCandidateParty(candidate.getCandidateParty());
+        }
+
+        Candidate saved = candidateRepository.save(candidate);
+
+        return modelMapper.map(saved,CandidateDTO.class);
 
     }
 }

@@ -1,13 +1,38 @@
 package com.internship.votingSystem.controller;
 
-import com.internship.votingSystem.service.VoterService;
-import org.springframework.web.bind.annotation.RestController;
+import com.internship.votingSystem.DTO.VoteRequestDTO;
+import com.internship.votingSystem.service.VoteService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/votes")
+@PreAuthorize("hasRole('VOTER')")
 public class VoteController {
-    private final VoterService voteService;
+    private final VoteService voteService;
 
-    public VoteController(VoterService voteService) {
-        this.voteService = voteService;
+    @PostMapping
+    public ResponseEntity<Map<String,String>> castVote(
+            @Valid @RequestBody VoteRequestDTO voteRequestDTO,
+            Principal principal){
+        voteService.castVote(principal.getName(), voteRequestDTO);
+        return ResponseEntity.ok(Map.of("message","Vote cast successfully"));
     }
+
+    @GetMapping("/elections/{electionId}/has-voted")
+    public ResponseEntity<Map<String,Boolean>> hasVoted(
+            @PathVariable Long electionId,
+            Principal principal){
+        boolean voted = voteService.hasVoted(principal.getName(), electionId);
+        return ResponseEntity.ok(Map.of("hasVoted",voted));
+    }
+
+
 }
