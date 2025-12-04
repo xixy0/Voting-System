@@ -29,7 +29,7 @@ public class VoterServiceImpl implements VoterService {
     @Override
     public UserDTO registerVoter(VoterRegistrationDTO voterRegistrationDTO) {
 
-        if(userRepository.existsByUserName(voterRegistrationDTO.getUsername())){
+        if(userRepository.existsByUsername(voterRegistrationDTO.getUsername())){
             throw new DuplicateResourceException("Username already exists");
         }
 

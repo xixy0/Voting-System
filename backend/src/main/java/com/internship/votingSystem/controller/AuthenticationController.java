@@ -24,14 +24,22 @@ public class AuthenticationController {
     private final VoterService voterService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@Valid @RequestBody VoterRegistrationDTO voterRegistrationDTO){
-        UserDTO user = voterService.registerVoter(voterRegistrationDTO);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    public ResponseEntity<?> register(@Valid @RequestBody VoterRegistrationDTO voterRegistrationDTO){
+        try {
+            UserDTO user = voterService.registerVoter(voterRegistrationDTO);
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request){
-        AuthResponse response = authenticationService.authenticate(request);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request){
+       try {
+           AuthResponse response = authenticationService.authenticate(request);
+           return ResponseEntity.ok(response);
+       }catch (Exception e){
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+       }
     }
 }

@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface CandidateRepository extends JpaRepository<Candidate,Long> {
     List<Candidate> findByElection(Election election);
-    List<Candidate> findByElectionId(Long electionId);
-    long countByElectionId(Long electionId);
+    List<Candidate> findByElectionElectionId(Long electionId);
+    Long countByElectionElectionId(Long electionId);
 }

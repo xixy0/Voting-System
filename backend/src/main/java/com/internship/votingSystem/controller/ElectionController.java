@@ -1,6 +1,5 @@
 package com.internship.votingSystem.controller;
 
-import com.internship.votingSystem.DTO.CandidateDTO;
 import com.internship.votingSystem.DTO.ElectionDTO;
 import com.internship.votingSystem.ElectionStatus;
 import com.internship.votingSystem.service.CandidateService;
@@ -22,38 +21,62 @@ public class ElectionController {
     private final ElectionService electionService;
     private final CandidateService candidateService;
 
-    @GetMapping
-    public ResponseEntity<List<ElectionDTO>> getAllElections(){
-        return ResponseEntity.ok(electionService.getAllElections());
+    @GetMapping("/getAll")
+    public ResponseEntity<List<?>> getAllElections(){
+        try {
+            return ResponseEntity.ok(electionService.getAllElections());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(List.of(e.getMessage()));
+        }
     }
 
     @GetMapping("/active")
-    public ResponseEntity<List<ElectionDTO>> getActiveElections(){
-        return ResponseEntity.ok(electionService.getActiveElections());
+    public ResponseEntity<List<?>> getActiveElections(){
+        try {
+            return ResponseEntity.ok(electionService.getActiveElections());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(List.of(e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ElectionDTO> getElectionById(@PathVariable Long id){
-        return ResponseEntity.ok(electionService.getElectionById(id));
+    public ResponseEntity<?> getElectionById(@PathVariable Long id){
+        try {
+            return ResponseEntity.ok(electionService.getElectionById(id));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}/candidates")
-    public ResponseEntity<List<CandidateDTO>> getCandidates(@PathVariable Long id){
-        return ResponseEntity.ok(candidateService.getCandidatesByElection(id));
+    public ResponseEntity<List<?>> getCandidates(@PathVariable Long id){
+        try {
+            return ResponseEntity.ok(candidateService.getCandidatesByElection(id));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(List.of(e.getMessage()));
+        }
     }
 
-    @PostMapping
+    @PostMapping()
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ElectionDTO> createElection(@Valid @RequestBody ElectionDTO electionDTO){
-        ElectionDTO created = electionService.createElection(electionDTO);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    public ResponseEntity<?> createElection(@Valid @RequestBody ElectionDTO electionDTO){
+        try {
+            ElectionDTO created = electionService.createElection(electionDTO);
+            return new ResponseEntity<>(created, HttpStatus.CREATED);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping("{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ElectionDTO> updateStatus(
+    public ResponseEntity<?> updateStatus(
             @PathVariable Long id,
             @RequestParam ElectionStatus status){
-        return ResponseEntity.ok(electionService.updateElectionStatus(id, status));
+        try{
+            return ResponseEntity.ok(electionService.updateElectionStatus(id, status));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

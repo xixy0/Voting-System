@@ -31,21 +31,23 @@ public class CandidateServiceImpl implements CandidateService {
                 ()->new ResourceNotFoundException("Election not found"));
 
         if(election.getElectionStatus() != ElectionStatus.SCHEDULED){
-            throw new InvalidElectionStateException("Can only add candidates to scheduled elecction");
+            throw new InvalidElectionStateException("Can only add candidates to scheduled election");
         }
 
         Candidate candidate = modelMapper.map(candidateDTO,Candidate.class);
         candidate.setElection(election);
         Candidate saved = candidateRepository.save(candidate);
 
-        return modelMapper.map(saved,CandidateDTO.class);
+        CandidateDTO candidateDTO1 =  modelMapper.map(saved,CandidateDTO.class);
+        candidateDTO1.setElectionId(election.getElectionId());
+        return candidateDTO1;
     }
 
 
 
     @Override
     public List<CandidateDTO> getCandidatesByElection(Long electionId) {
-       List<Candidate> candidates = candidateRepository.findByElectionId(electionId);
+       List<Candidate> candidates = candidateRepository.findByElectionElectionId(electionId);
        return candidates.stream()
                .map(candidate->modelMapper.map(candidate,CandidateDTO.class))
                .collect(Collectors.toList());
@@ -89,7 +91,8 @@ public class CandidateServiceImpl implements CandidateService {
 
         Candidate saved = candidateRepository.save(candidate);
 
-        return modelMapper.map(saved,CandidateDTO.class);
-
+        CandidateDTO candidateDTO1 =  modelMapper.map(saved,CandidateDTO.class);
+        candidateDTO1.setElectionId(election.getElectionId());
+        return candidateDTO1;
     }
 }

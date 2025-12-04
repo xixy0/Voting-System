@@ -12,20 +12,29 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/candidates")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class CandidateController {
+
     private final  CandidateService candidateService;
 
     @PostMapping
-    public ResponseEntity<CandidateDTO> addCandidate(@Valid @RequestBody CandidateDTO candidateDTO){
-        CandidateDTO created = candidateService.addCandidate(candidateDTO);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    public ResponseEntity<?> addCandidate(@Valid @RequestBody CandidateDTO candidateDTO){
+        try {
+            CandidateDTO created = candidateService.addCandidate(candidateDTO);
+            return new ResponseEntity<>(created, HttpStatus.CREATED);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CandidateDTO> updateCandidate(
+    @PostMapping("/{id}")
+    public ResponseEntity<?> updateCandidate(
             @PathVariable Long id,
             @Valid @RequestBody CandidateDTO candidateDTO){
-        return ResponseEntity.ok(candidateService.updateCandidate(candidateDTO));
+        try {
+            return ResponseEntity.ok(candidateService.updateCandidate(candidateDTO));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

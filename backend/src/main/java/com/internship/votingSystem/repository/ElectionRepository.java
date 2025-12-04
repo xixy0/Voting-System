@@ -11,9 +11,9 @@ import java.util.List;
 
 @Repository
 public interface ElectionRepository extends JpaRepository<Election,Long> {
-    List<Election> findByStatus(ElectionStatus status);
-    List<Election> findByStartTimeBetween(LocalDateTime start,LocalDateTime end);
+    List<Election> findByElectionStatus(ElectionStatus status);
+    List<Election> findByElectionStartTimeBetween(LocalDateTime start,LocalDateTime end);
 
-    @Query("SELECT e FROM Election e WHERE e.status='ACTIVE'" +"AND CURRENT_TIMESTAMP BETWEEN e.startTime AND e.endTime")
+    @Query("SELECT e FROM Election e WHERE e.electionStatus='ACTIVE'" +"AND CURRENT_TIMESTAMP BETWEEN e.electionStartTime AND e.electionEndTime")
     List<Election> findActiveElections();
 }
