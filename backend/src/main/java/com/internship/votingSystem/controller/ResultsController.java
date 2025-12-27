@@ -19,7 +19,7 @@ public class ResultsController {
 
     private final VoteService voteService;
 
-    @GetMapping("/elections/{electionsId}")
+    @GetMapping("/elections/{electionId}")
     public ResponseEntity<List<?>> getResults(@PathVariable Long electionId) {
         try {
             return ResponseEntity.ok(voteService.getElectionResults(electionId));

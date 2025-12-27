@@ -73,12 +73,16 @@ public class VoteServiceImpl implements VoteService {
         Election election = electionRepository.findById(electionId)
                 .orElseThrow(()->new ResourceNotFoundException("Election not found"));
 
+        if(!election.getElectionStatus().equals(ElectionStatus.COMPLETED)){
+            throw new InvalidElectionStateException("Election not completted");
+        }
+
         List<Candidate> candidates = candidateRepository.findByElectionElectionId(electionId);
-        long totalVotes = voteRepository.countByCandidateCandidateId(electionId);
+        long totalVotes = voteRepository.countByElectionElectionId(electionId);
 
         return candidates.stream()
                 .map(candidate -> {
-                    long voteCount = voteRepository.countByCandidateCandidateId(candidate.getCandidateId());
+                    long voteCount = voteRepository.countByCandidate_CandidateId(candidate.getCandidateId());
                     double percentage = totalVotes > 0 ? (voteCount * 100.0 / totalVotes) : 0;
                     return new VoteResultDTO(
                             candidate.getCandidateId(),

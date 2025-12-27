@@ -20,11 +20,15 @@ public class VoteController {
     private final VoteService voteService;
 
     @PostMapping
-    public ResponseEntity<Map<String,String>> castVote(
+    public ResponseEntity<?> castVote(
             @Valid @RequestBody VoteRequestDTO voteRequestDTO,
             Principal principal){
-        voteService.castVote(principal.getName(), voteRequestDTO);
-        return ResponseEntity.ok(Map.of("message","Vote cast successfully"));
+        try {
+            voteService.castVote(principal.getName(), voteRequestDTO);
+            return ResponseEntity.ok(Map.of("message", "Vote cast successfully"));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/elections/{electionId}/has-voted")
