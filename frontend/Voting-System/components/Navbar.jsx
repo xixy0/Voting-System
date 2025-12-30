@@ -32,7 +32,7 @@ function Navbar() {
 
           {isLoggedIn && role?.toUpperCase().includes("ADMIN") && (
             <Link
-              to="/candidate"
+              to="/candidate/getAll"
               className="hover:text-orange-300 transition"
             >
               Candidates
@@ -40,7 +40,7 @@ function Navbar() {
           )}
 
           <Link
-            to="/about"
+            to="https://github.com/xixy0/Voting-System"
             className="hover:text-orange-300 transition"
           >
             About
@@ -102,7 +102,7 @@ function Navbar() {
 
             {isLoggedIn && role?.toUpperCase().includes("ADMIN") && (
               <Link
-                to="/candidate"
+                to="/candidate/getAll"
                 onClick={() => setMenuOpen(false)}
                 className="hover:text-black"
               >
@@ -111,7 +111,7 @@ function Navbar() {
             )}
 
             <Link
-              to="/about"
+              to="https://github.com/xixy0/Voting-System"
               onClick={() => setMenuOpen(false)}
               className="hover:text-black"
             >

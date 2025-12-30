@@ -13,7 +13,7 @@ function CreateElection() {
         electionDescription: "",
         electionStartTime: "",
         electionEndTime: "",
-        electionStatus: ""
+        electionStatus: "SCHEDULED"
     });
 
     const handleInputChange = (e) => {
@@ -46,112 +46,101 @@ function CreateElection() {
                 </div>
 
                 {/* Form */}
-                {role?.includes("ADMIN") && <form
-                    className="space-y-5"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleAdd();
-                    }}
-                >
+                {role?.includes("ADMIN") ?
+                    (<form
+                        className="space-y-5"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleAdd();
+                        }}
+                    >
 
-                    {/* Title */}
-                    <div>
-                        <label className="block text-sm font-medium text-orange-700 mb-1">
-                            Election Title
-                        </label>
-                        <input
-                            name="electionTitle"
-                            value={formData.electionTitle}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-orange-600 outline-none"
-                        />
-                    </div>
-
-                    {/* Description */}
-                    <div>
-                        <label className="block text-sm font-medium text-orange-700 mb-1">
-                            Election Description
-                        </label>
-                        <textarea
-                            name="electionDescription"
-                            value={formData.electionDescription}
-                            onChange={handleInputChange}
-                            rows={4}
-                            required
-                            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-orange-600 outline-none"
-                        />
-                    </div>
-
-                    {/* Date Time */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
+                        {/* Title */}
                         <div>
                             <label className="block text-sm font-medium text-orange-700 mb-1">
-                                Start Time
+                                Election Title
                             </label>
                             <input
-                                type="datetime-local"
-                                name="electionStartTime"
-                                value={formData.electionStartTime}
+                                name="electionTitle"
+                                value={formData.electionTitle}
                                 onChange={handleInputChange}
                                 required
                                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-orange-600 outline-none"
                             />
                         </div>
 
+                        {/* Description */}
                         <div>
                             <label className="block text-sm font-medium text-orange-700 mb-1">
-                                End Time
+                                Election Description
                             </label>
-                            <input
-                                type="datetime-local"
-                                name="electionEndTime"
-                                value={formData.electionEndTime}
+                            <textarea
+                                name="electionDescription"
+                                value={formData.electionDescription}
                                 onChange={handleInputChange}
+                                rows={4}
                                 required
                                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-orange-600 outline-none"
                             />
                         </div>
 
-                    </div>
+                        {/* Date Time */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                    {/* Status */}
-                    <div>
-                        <label className="block text-sm font-medium text-orange-700 mb-1">
-                            Election Status
-                        </label>
-                        <select
-                            name="electionStatus"
-                            value={formData.electionStatus}
-                            onChange={handleInputChange}
-                            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-orange-600 outline-none"
-                        >
-                            <option value="SCHEDULED">Scheduled</option>
-                            <option value="ACTIVE">Active</option>
-                            <option value="COMPLETED">Completed</option>
-                        </select>
-                    </div>
+                            <div>
+                                <label className="block text-sm font-medium text-orange-700 mb-1">
+                                    Start Time
+                                </label>
+                                <input
+                                    type="datetime-local"
+                                    name="electionStartTime"
+                                    value={formData.electionStartTime}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-orange-600 outline-none"
+                                />
+                            </div>
 
-                    {/* Buttons */}
-                    <div className="flex justify-end gap-3 pt-4">
-                        <button
-                            type="button"
-                            onClick={() => navigate(-1)}
-                            className="px-5 py-2 border border-slate-300 text-slate-600 rounded-md hover:bg-slate-100 transition"
-                        >
-                            Cancel
-                        </button>
+                            <div>
+                                <label className="block text-sm font-medium text-orange-700 mb-1">
+                                    End Time
+                                </label>
+                                <input
+                                    type="datetime-local"
+                                    name="electionEndTime"
+                                    value={formData.electionEndTime}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-orange-600 outline-none"
+                                />
+                            </div>
 
-                        <button
-                            type="submit"
-                            className="px-5 py-2 bg-orange-700 text-white rounded-md hover:bg-orange-800 transition"
-                        >
-                            Create Election
-                        </button>
-                    </div>
+                        </div>
 
-                </form> }
+
+                        {/* Buttons */}
+                        <div className="flex justify-end gap-3 pt-4">
+                            <button
+                                type="button"
+                                onClick={() => navigate(-1)}
+                                className="px-5 py-2 border border-slate-300 text-slate-600 rounded-md hover:bg-slate-100 transition"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="submit"
+                                className="px-5 py-2 bg-orange-700 text-white rounded-md hover:bg-orange-800 transition"
+                            >
+                                Create Election
+                            </button>
+                        </div>
+
+                    </form>) : (
+                        <p className="text-center text-red-600 font-medium">
+                            You are not authorized to create elections.
+                        </p>
+                    )}
             </div>
         </div>
     );

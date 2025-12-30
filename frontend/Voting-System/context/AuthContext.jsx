@@ -53,7 +53,7 @@ export function AuthProvider({ children }) {
 
         window.dispatchEvent(new Event("authChange"));
         toast.success("Successfully Logged In");
-        navigate("/electionDetails");
+        navigate("/election/details");
     }
 
     const logout = () =>{

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CandidateServiceImpl implements CandidateService {
 
-    private final CandidateRepository candidateRepository;;
+    private final CandidateRepository candidateRepository;
+    ;
     private final ElectionRepository electionRepository;
     private final ModelMapper modelMapper;
 
@@ -28,41 +30,40 @@ public class CandidateServiceImpl implements CandidateService {
     public CandidateDTO addCandidate(CandidateDTO candidateDTO) {
 
         Election election = electionRepository.findById(candidateDTO.getElectionId()).orElseThrow(
-                ()->new ResourceNotFoundException("Election not found"));
+                () -> new ResourceNotFoundException("Election not found"));
 
-        if(election.getElectionStatus() != ElectionStatus.SCHEDULED){
+        if (election.getElectionStatus() != ElectionStatus.SCHEDULED) {
             throw new InvalidElectionStateException("Can only add candidates to scheduled election");
         }
 
-        Candidate candidate = modelMapper.map(candidateDTO,Candidate.class);
+        Candidate candidate = modelMapper.map(candidateDTO, Candidate.class);
         candidate.setElection(election);
         Candidate saved = candidateRepository.save(candidate);
 
-        CandidateDTO candidateDTO1 =  modelMapper.map(saved,CandidateDTO.class);
+        CandidateDTO candidateDTO1 = modelMapper.map(saved, CandidateDTO.class);
         candidateDTO1.setElectionId(election.getElectionId());
         return candidateDTO1;
     }
 
 
-
     @Override
     public List<CandidateDTO> getCandidatesByElection(Long electionId) {
-       List<Candidate> candidates = candidateRepository.findByElectionElectionId(electionId);
-       return candidates.stream()
-               .map(candidate->modelMapper.map(candidate,CandidateDTO.class))
-               .collect(Collectors.toList());
+        List<Candidate> candidates = candidateRepository.findByElectionElectionId(electionId);
+        return candidates.stream()
+                .map(candidate -> modelMapper.map(candidate, CandidateDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
     public void deleteCandidate(Long candidateId) {
 
         Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(
-               ()-> new ResourceNotFoundException("Candidate not found"));
-        if(candidate.getElection().getElectionStatus() != ElectionStatus.SCHEDULED){
-           throw new InvalidElectionStateException("Cannot delete candidate from active election");
+                () -> new ResourceNotFoundException("Candidate not found"));
+        if (candidate.getElection().getElectionStatus() != ElectionStatus.SCHEDULED) {
+            throw new InvalidElectionStateException("Cannot delete candidate from active election");
         }
 
-       candidateRepository.delete(candidate);
+        candidateRepository.delete(candidate);
 
     }
 
@@ -70,29 +71,39 @@ public class CandidateServiceImpl implements CandidateService {
     public CandidateDTO updateCandidate(CandidateDTO candidateDTO) {
 
         Election election = electionRepository.findById(candidateDTO.getElectionId())
-                .orElseThrow(()->new ResourceNotFoundException("Election not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Election not found"));
 
-        if(election.getElectionStatus() != ElectionStatus.SCHEDULED){
+        if (election.getElectionStatus() != ElectionStatus.SCHEDULED) {
             throw new InvalidElectionStateException("Candidate cannot be updated");
         }
 
         Candidate candidate = candidateRepository.findById(candidateDTO.getCandidateId())
-                .orElseThrow(()-> new ResourceNotFoundException("Candidate not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Candidate not found"));
 
-        if(!candidateDTO.getCandidateName().isEmpty()){
-            candidate.setCandidateName(candidate.getCandidateName());
+        if (candidateDTO.getCandidateName() != null && !candidateDTO.getCandidateName().isBlank()) {
+            candidate.setCandidateName(candidateDTO.getCandidateName());
         }
-        if(!candidateDTO.getCandidateDescription().isEmpty()){
-            candidate.setCandidateDescription(candidate.getCandidateDescription());
+
+        if (candidateDTO.getCandidateDescription() != null && !candidateDTO.getCandidateDescription().isBlank()) {
+            candidate.setCandidateDescription(candidateDTO.getCandidateDescription());
         }
-        if(!candidateDTO.getCandidateParty().isEmpty()){
-            candidate.setCandidateParty(candidate.getCandidateParty());
+
+        if (candidateDTO.getCandidateParty() != null && !candidateDTO.getCandidateParty().isBlank()) {
+            candidate.setCandidateParty(candidateDTO.getCandidateParty());
         }
 
         Candidate saved = candidateRepository.save(candidate);
 
-        CandidateDTO candidateDTO1 =  modelMapper.map(saved,CandidateDTO.class);
-        candidateDTO1.setElectionId(election.getElectionId());
-        return candidateDTO1;
+        CandidateDTO response = modelMapper.map(saved, CandidateDTO.class);
+        response.setElectionId(election.getElectionId());
+        return response;
+    }
+
+    @Override
+    public List<CandidateDTO> getAll() {
+        List<Candidate> candidates =  candidateRepository.findAll();
+        return candidates.stream()
+                .map(candidate -> modelMapper.map(candidate, CandidateDTO.class))
+                .collect(Collectors.toList());
     }
 }

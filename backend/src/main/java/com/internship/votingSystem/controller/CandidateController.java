@@ -1,6 +1,7 @@
 package com.internship.votingSystem.controller;
 
 import com.internship.votingSystem.DTO.CandidateDTO;
+import com.internship.votingSystem.exceptions.ResourceNotFoundException;
 import com.internship.votingSystem.service.CandidateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,4 +41,39 @@ public class CandidateController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/{candidateId}")
+    public ResponseEntity<?> deleteCandidate(
+            @PathVariable Long candidateId
+    ){
+        try{
+            candidateService.deleteCandidate(candidateId);
+            return ResponseEntity.status(HttpStatus.OK).body("Candidate Deleted");
+        }catch (ResourceNotFoundException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
+
+    @GetMapping("{electionId}")
+    ResponseEntity<?> getCandidatesByElection(
+            @PathVariable Long electionId
+    ){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(candidateService.getCandidatesByElection(electionId));
+        }catch (ResourceNotFoundException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No candidates found");
+        }
+    }
+
+    @GetMapping("/getAll")
+    ResponseEntity<?> getAllCandidates(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(candidateService.getAll());
+        }catch (RuntimeException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
+
+
+
 }

@@ -11,5 +11,5 @@ public interface CandidateService {
     List<CandidateDTO> getCandidatesByElection(Long electionId);
     void deleteCandidate(Long candidateId);
     CandidateDTO updateCandidate(CandidateDTO candidateDTO);
-
+    List<CandidateDTO> getAll();
 }
